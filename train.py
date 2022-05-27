@@ -127,6 +127,8 @@ def calc_accuracy(X,Y):
     train_acc = (max_indices == Y).sum().data.cpu().numpy()/max_indices.size()[0]
     return train_acc
 
+max_acc = -30
+
 for e in range(num_epochs):
     train_acc = 0.0
     test_acc = 0.0
@@ -158,4 +160,6 @@ for e in range(num_epochs):
         test_acc += calc_accuracy(out, label)
     print("epoch {} test acc {}".format(e+1, test_acc / (batch_id+1)))
 
-torch.save(model.state_dict(), PATH)
+    if test_acc > max_acc:
+      torch.save(model.state_dict(), 'model/emotion.pt')
+

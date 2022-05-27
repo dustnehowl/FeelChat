@@ -12,11 +12,3 @@ python-engineio==3.11.2
 python-socketio==4.4.0
 six==1.15.0
 Werkzeug==1.0.1
-mxnet
-gluonnlp 
-pandas 
-tqdm
-sentencepiece
-transformers==4.8.2
-torch
-git+https://git@github.com/SKTBrain/KoBERT.git@master
