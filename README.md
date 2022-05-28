@@ -97,6 +97,7 @@ class BERTClassifier(nn.Module):
 ```
 #### 세부사항
 * num_classes를 7 로 하여 7가지 감정을 분석 할 수 있다.
+
 Train
 #### 코드
 ```python
@@ -317,3 +318,13 @@ socket.on('message', function(data) {
 * data.msg 의 제일 마지막 부분이 감정을 분류한 label 값이다.
 * data.msg.slice(0,-1)를 query에 보내 감정을 지우고 메세지를 emit 할 수 있게한다.
 * 감정에 따라 다른 색깔을 h4 태그에 적용시킨다.
+
+## 개발환경 및 실행 환경
+Python 3.7(Windows 10, Mac OS)
+
+## 데모 영상
+동영상 
+
+## 참고자료
+[[파이썬]KoBERT로 다중 분류 모델 만들기](https://velog.io/@seolini43/KOBERT%EB%A1%9C-%EB%8B%A4%EC%A4%91-%EB%B6%84%EB%A5%98-%EB%AA%A8%EB%8D%B8-%EB%A7%8C%EB%93%A4%EA%B8%B0-%ED%8C%8C%EC%9D%B4%EC%8D%ACColab)
+[Flask-Simple-Chat](https://github.com/iml1111/Flask-Simple-Chat)
