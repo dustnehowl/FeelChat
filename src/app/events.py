@@ -1,6 +1,6 @@
 from flask import session
 from flask_socketio import emit, join_room, leave_room, Namespace
-
+import test
 
 # 클래스 기반 Namespace
 class ChatNamepsace(Namespace):
@@ -18,7 +18,8 @@ class ChatNamepsace(Namespace):
 
     def on_text(self, data):
         room = session.get('room')
-        emit('message', {'msg': session.get('name') + ':' + data['msg']}, room=room)
+        emotion = test.predict(data['msg'])
+        emit('message', {'msg': session.get('name') + ':' + data['msg'] + str(emotion[0])}, room=room)
 
     def on_left(self, data):
         room = session.get('room')
@@ -38,7 +39,8 @@ def socketio_init(socketio):
     @socketio.on('text', namespace='/chat')
     def text(message):
         room = session.get('room')
-        emit('message', {'msg': session.get('name') + ':' + message['msg']}, room=room)
+        emotion = test.predict(message)
+        emit('message', {'msg': session.get('name') + ':' + message['msg'] + emotion}, room=room)
 
 
     @socketio.on('left', namespace='/chat')

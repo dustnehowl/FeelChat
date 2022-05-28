@@ -14,9 +14,6 @@ from kobert.pytorch_kobert import get_pytorch_kobert_model
 from transformers import AdamW
 from transformers.optimization import get_cosine_schedule_with_warmup
 
-device = torch.device("cpu")
-bertmodel, vocab = get_pytorch_kobert_model()
-
 class BERTDataset(Dataset):
     def __init__(self, dataset, sent_idx, label_idx, bert_tokenizer, max_len,
                  pad, pair):
@@ -62,7 +59,11 @@ class BERTClassifier(nn.Module):
             out = self.dropout(pooler)
         return self.classifier(out)
 
-print(device)
+
+
+device = torch.device("cpu")
+bertmodel, vocab = get_pytorch_kobert_model()
+
 model = BERTClassifier(bertmodel,  dr_rate=0.5).to(device)
 model.load_state_dict(torch.load('model/emotion.pt', map_location='cpu'))
 model.eval()
@@ -85,7 +86,7 @@ def predict(predict_sentence):
     dataset_another = [data]
 
     another_test = BERTDataset(dataset_another, 0, 1, tok, max_len, True, False)
-    test_dataloader = torch.utils.data.DataLoader(another_test, batch_size=batch_size, num_workers=5)
+    test_dataloader = torch.utils.data.DataLoader(another_test, batch_size=batch_size)
     
     model.eval()
 
@@ -118,12 +119,3 @@ def predict(predict_sentence):
                 return (5, "행복")
             elif np.argmax(logits) == 6:
                 return (6, "혐오")
-
-
-end = 1
-while end == 1 :
-    sentence = input("하고싶은 말을 입력해주세요 : ")
-    if sentence == 0 :
-        break
-    print(predict(sentence))
-    print("\n")
