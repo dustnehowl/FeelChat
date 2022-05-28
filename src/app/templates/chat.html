@@ -1,10 +1,6 @@
 <html>
     <head>
         <title>Flask-Simple-Chat</title>
-        <style type="text/css">
-            h4 {
-                color: pink;
-            }
         </style>
         <script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
@@ -24,25 +20,25 @@
                     $('#chat').val($('#chat').val() + data.msg.slice(0,-1) + '\n');
                     emotion = data.msg[data.msg.length-1];
                     if(emotion == 0){
-                        $('#emotion').css('color','red');
-                    }
-                    else if(emotion == 1){
-                        $('#emotion').css('color','blue');
-                    }
-                    else if(emotion == 2){
                         $('#emotion').css('color','green');
                     }
+                    else if(emotion == 1){
+                        $('#emotion').css('color','yellow');
+                    }
+                    else if(emotion == 2){
+                        $('#emotion').css('color','red');
+                    }
                     else if(emotion == 3){
-                        $('#emotion').css('color','black');
+                        $('#emotion').css('color','blue');
                     }
                     else if(emotion == 4){
-                        $('#emotion').css('color','pink');
+                        $('#emotion').css('color','black');
                     }
                     else if(emotion == 5){
                         $('#emotion').css('color','orange');
                     }
                     else if(emotion == 6){
-                        $('#emotion').css('color','yellow');
+                        $('#emotion').css('color','cyan');
                     }
                     console.log(data.msg);
                     $('#chat').scrollTop($('#chat')[0].scrollHeight);
