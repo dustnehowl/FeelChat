@@ -14,7 +14,7 @@ from kobert.pytorch_kobert import get_pytorch_kobert_model
 from transformers import AdamW
 from transformers.optimization import get_cosine_schedule_with_warmup
 
-device = torch.device("cuda:0")
+device = torch.device("cpu")
 bertmodel, vocab = get_pytorch_kobert_model()
 
 class BERTDataset(Dataset):
@@ -62,8 +62,9 @@ class BERTClassifier(nn.Module):
             out = self.dropout(pooler)
         return self.classifier(out)
 
+print(device)
 model = BERTClassifier(bertmodel,  dr_rate=0.5).to(device)
-model.load_state_dict(torch.load('model\emotion.pt'))
+model.load_state_dict(torch.load('model/emotion.pt', map_location='cpu'))
 model.eval()
 
 max_len = 64
