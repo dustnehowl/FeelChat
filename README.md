@@ -89,9 +89,9 @@ for e in range(num_epochs):
       torch.save(model.state_dict(), '/content/drive/MyDrive/seoultech/nlp/emotion.pt')
 ```
 #### train, test accuracy
-그래프
+![image](https://cdn.discordapp.com/attachments/874897301292875836/980396730157772850/KakaoTalk_Photo_2022-05-29-18-05-39.png)
 #### Loss
-그래프
+![image](https://cdn.discordapp.com/attachments/874897301292875836/980396729910296656/KakaoTalk_Photo_2022-05-29-18-05-44.png)
 #### 세부사항
 best accuracy인 모델을 emotion.pt 에 저장한다.
 
