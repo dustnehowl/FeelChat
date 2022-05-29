@@ -28,12 +28,12 @@ http://127.0.0.1:5000 에 접속 ->
 
 ### 감정
 감정은 마지막에 입력된 텍스트의 감정을 분석하여 색깔로 표현합니다.
-* 공포 : 초록
+* 공포 : 검정
 * 놀람 : 노랑
 * 분노 : 빨강
 * 슬픔 : 파랑
-* 중립 : 검정
-* 행복 : 오렌지
+* 중립 : 초록
+* 행복 : 핑크
 * 혐오 : 민트초코
 
 상대방의 감정을 생각하며 대화를 진행해 보세요!!
@@ -290,7 +290,7 @@ socket.on('message', function(data) {
                     $('#chat').val($('#chat').val() + data.msg.slice(0,-1) + '\n');
                     emotion = data.msg[data.msg.length-1];
                     if(emotion == 0){
-                        $('#emotion').css('color','green');
+                        $('#emotion').css('color','black');
                     }
                     else if(emotion == 1){
                         $('#emotion').css('color','yellow');
@@ -308,7 +308,7 @@ socket.on('message', function(data) {
                         $('#emotion').css('color','orange');
                     }
                     else if(emotion == 6){
-                        $('#emotion').css('color','cyan');
+                        $('#emotion').css('color','#81D8D0');
                     }
                     console.log(data.msg);
                     $('#chat').scrollTop($('#chat')[0].scrollHeight);
@@ -320,11 +320,12 @@ socket.on('message', function(data) {
 * 감정에 따라 다른 색깔을 h4 태그에 적용시킨다.
 
 ## 개발환경 및 실행 환경
-Python 3.7(Windows 10, Mac OS)
+Python 3.7(Mac OS)
 
 ## 데모 영상
 동영상 
 
 ## 참고자료
 [[파이썬]KoBERT로 다중 분류 모델 만들기](https://velog.io/@seolini43/KOBERT%EB%A1%9C-%EB%8B%A4%EC%A4%91-%EB%B6%84%EB%A5%98-%EB%AA%A8%EB%8D%B8-%EB%A7%8C%EB%93%A4%EA%B8%B0-%ED%8C%8C%EC%9D%B4%EC%8D%ACColab)
+
 [Flask-Simple-Chat](https://github.com/iml1111/Flask-Simple-Chat)
