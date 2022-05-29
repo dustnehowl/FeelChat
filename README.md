@@ -42,7 +42,7 @@ http://127.0.0.1:5000 에 접속 ->
 
 ### 1. 감정분석 학습
 
-Train(epochs = 30)
+Train(epochs = 10)
 #### 코드
 ```python
 max_acc = -30
