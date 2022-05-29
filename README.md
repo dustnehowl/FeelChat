@@ -1,7 +1,7 @@
 # 넌씨눈을 위한 감정분석 채팅 프로그램
 넌씨눈 : 눈치가 없는 사람들을 싸잡아 일컫는 말
 
-이미지 넣기
+![image](https://cdn.discordapp.com/attachments/874897301292875836/980365430302572615/2022-05-29_4.02.07.png)
 
 ## 시작하기
 ### requirement
@@ -17,14 +17,14 @@ python3 src/chat.py
 
 http://127.0.0.1:5000 에 접속 ->
 
-![image](https://cdn.discordapp.com/attachments/874897301292875836/980123513182621766/2022-05-29_12.00.47.png)
+![image](https://cdn.discordapp.com/attachments/874897301292875836/980361171834118204/2022-05-29_3.45.13.png)
 
 ### 채팅방 입장
 닉네임, 방이름 입력 후 입장
 * 방이름이 이미 존재하는 경우 존재하는 방에 입장
 * 방이름이 존재 하지 않는 경우 새로운 방 생성 후 입장
 
-![image](https://cdn.discordapp.com/attachments/874897301292875836/980124140017172550/2022-05-29_12.03.17.png)
+![image](https://cdn.discordapp.com/attachments/874897301292875836/980362304178757642/unknown.png)
 
 ### 감정
 감정은 마지막에 입력된 텍스트의 감정을 분석하여 색깔로 표현합니다.
@@ -41,69 +41,14 @@ http://127.0.0.1:5000 에 접속 ->
 ## 개발과정 및 기능설명
 
 ### 1. 감정분석 학습
-data load
-```python
-import pandas as pd
-data = pd.read_excel('/content/drive/MyDrive/seoultech/nlp/한국어_단발성_대화_데이터셋.xlsx')
-```
-입력 데이터(토큰화, 인코딩, 패딩)
-```python
-class BERTDataset(Dataset):
-    def __init__(self, dataset, sent_idx, label_idx, bert_tokenizer, max_len,
-                 pad, pair):
-        transform = nlp.data.BERTSentenceTransform(
-            bert_tokenizer, max_seq_length=max_len, pad=pad, pair=pair)
 
-        self.sentences = [transform([i[sent_idx]]) for i in dataset]
-        self.labels = [np.int32(i[label_idx]) for i in dataset]
-
-    def __getitem__(self, i):
-        return (self.sentences[i] + (self.labels[i], ))
-
-    def __len__(self):
-        return (len(self.labels))
-```
-classifier
-#### 코드
-```python
-class BERTClassifier(nn.Module):
-    def __init__(self,
-                 bert,
-                 hidden_size = 768,
-                 num_classes=7,   ##클래스 수 조정##
-                 dr_rate=None,
-                 params=None):
-        super(BERTClassifier, self).__init__()
-        self.bert = bert
-        self.dr_rate = dr_rate
-                 
-        self.classifier = nn.Linear(hidden_size , num_classes)
-        if dr_rate:
-            self.dropout = nn.Dropout(p=dr_rate)
-    
-    def gen_attention_mask(self, token_ids, valid_length):
-        attention_mask = torch.zeros_like(token_ids)
-        for i, v in enumerate(valid_length):
-            attention_mask[i][:v] = 1
-        return attention_mask.float()
-
-    def forward(self, token_ids, valid_length, segment_ids):
-        attention_mask = self.gen_attention_mask(token_ids, valid_length)
-        
-        _, pooler = self.bert(input_ids = token_ids, token_type_ids = segment_ids.long(), attention_mask = attention_mask.float().to(token_ids.device))
-        if self.dr_rate:
-            out = self.dropout(pooler)
-        return self.classifier(out)
-```
-#### 세부사항
-* num_classes를 7 로 하여 7가지 감정을 분석 할 수 있다.
-
-Train
+Train(epochs = 30)
 #### 코드
 ```python
 max_acc = -30
 train_accuracy = []
 test_accuracy = []
+loss_ = []
 for e in range(num_epochs):
     train_acc = 0.0
     test_acc = 0.0
@@ -123,6 +68,7 @@ for e in range(num_epochs):
         train_acc += calc_accuracy(out, label)
         if batch_id % log_interval == 0:
             print("epoch {} batch id {} loss {} train acc {}".format(e+1, batch_id+1, loss.data.cpu().numpy(), train_acc / (batch_id+1)))
+            loss_.append(loss.data.cpu().numpy())
     print("epoch {} train acc {}".format(e+1, train_acc / (batch_id+1)))
     
     train_accuracy.append(train_acc/(batch_id+1))
@@ -142,6 +88,10 @@ for e in range(num_epochs):
     if test_acc > max_acc:
       torch.save(model.state_dict(), '/content/drive/MyDrive/seoultech/nlp/emotion.pt')
 ```
+#### train, test accuracy
+그래프
+#### Loss
+그래프
 #### 세부사항
 best accuracy인 모델을 emotion.pt 에 저장한다.
 
@@ -274,50 +224,65 @@ def predict(predict_sentence):
 #### 세부사항
 * predict 함수를 이용하여 text를 입력했을 때 필요한 감정을 받아옵니다.
 
-### 3. 채팅 프로그램 오픈소스(수정)
-보내는 메세지에 predict() 함수 적용하여 Emotion 함께 전송
-```python
-    def on_text(self, data):
-        room = session.get('room')
-        emotion = test.predict(data['msg'])
-        emit('message', {'msg': session.get('name') + ':' + data['msg'] + str(emotion[0])}, room=room)
-```
+### 3. 채팅방 입장
+![image](https://cdn.discordapp.com/attachments/874897301292875836/980366509828341860/2022-05-29_4.06.25.png)
 
-### 4. Flask html 수정
+#### 세부사항
+* 닉네임과 방이름을 입력하면 입장합니다.
+* 해당 방이 세션이 존재할 경우, 그곳으로 입장되며, 없을 경우 새로 생성합니다.
+
+### 4. 채팅 및 감정 분석
+![image](https://cdn.discordapp.com/attachments/874897301292875836/980367432206139392/2022-05-29_4.10.04.png)
+
 #### 코드
+```python
+    @socketio.on('text', namespace='/chat')
+    def text(message):
+        room = session.get('room')
+        emotion = test.predict(message)
+        emit('message', {'msg': session.get('name') + ':' + message['msg'] + emotion}, room=room)
+```
 ```html
 socket.on('message', function(data) {
-                    $('#chat').val($('#chat').val() + data.msg.slice(0,-1) + '\n');
+                    $('#chat').val($('#chat').val() + '[' +currentTime() + '] ' + data.msg.slice(0,-1) + '\n');
+                    mess = data.msg.slice(0,-1);
                     emotion = data.msg[data.msg.length-1];
+                    
                     if(emotion == 0){
-                        $('#emotion').css('color','black');
+                        $('h4').text("공포");
+                        $('.circle').css('background','black');
                     }
                     else if(emotion == 1){
-                        $('#emotion').css('color','yellow');
+                        $('h4').text("놀람");
+                        $('.circle').css('background','yellow');
                     }
                     else if(emotion == 2){
-                        $('#emotion').css('color','red');
+                        $('h4').text("분노");
+                        $('.circle').css('background','red');
                     }
                     else if(emotion == 3){
-                        $('#emotion').css('color','blue');
+                        $('h4').text("슬픔");
+                        $('.circle').css('background','blue');
                     }
                     else if(emotion == 4){
-                        $('#emotion').css('color','black');
+                        $('h4').text("중립");
+                        $('.circle').css('background','green');
                     }
                     else if(emotion == 5){
-                        $('#emotion').css('color','orange');
+                        $('h4').text("행복");
+                        $('.circle').css('background','pink');
                     }
                     else if(emotion == 6){
-                        $('#emotion').css('color','#81D8D0');
+                        $('h4').text("혐오");
+                        $('.circle').css('background','#81D8D0');
                     }
-                    console.log(data.msg);
                     $('#chat').scrollTop($('#chat')[0].scrollHeight);
                 });
 ```
 #### 세부사항
-* data.msg 의 제일 마지막 부분이 감정을 분류한 label 값이다.
-* data.msg.slice(0,-1)를 query에 보내 감정을 지우고 메세지를 emit 할 수 있게한다.
-* 감정에 따라 다른 색깔을 h4 태그에 적용시킨다.
+* 메세지를 보낼 때 감정을 같이 보낸다.(import test)
+* 받은 메세지에서 마지막 숫자(감정)을 떼고 메세지를 emit한다.
+* 마지막 숫자(감정)에 따른 css를 적용시켜준다.
 
 ## 개발환경 및 실행 환경
 Python 3.7(Mac OS)
@@ -329,3 +294,4 @@ Python 3.7(Mac OS)
 [[파이썬]KoBERT로 다중 분류 모델 만들기](https://velog.io/@seolini43/KOBERT%EB%A1%9C-%EB%8B%A4%EC%A4%91-%EB%B6%84%EB%A5%98-%EB%AA%A8%EB%8D%B8-%EB%A7%8C%EB%93%A4%EA%B8%B0-%ED%8C%8C%EC%9D%B4%EC%8D%ACColab)
 
 [Flask-Simple-Chat](https://github.com/iml1111/Flask-Simple-Chat)
+
