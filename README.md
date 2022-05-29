@@ -288,7 +288,7 @@ socket.on('message', function(data) {
 Python 3.7(Mac OS)
 
 ## 데모 영상
-동영상 
+https://user-images.githubusercontent.com/39877181/170857905-8ddb658f-d55a-405a-93c1-991de03f0892.mov
 
 ## 참고자료
 [[파이썬]KoBERT로 다중 분류 모델 만들기](https://velog.io/@seolini43/KOBERT%EB%A1%9C-%EB%8B%A4%EC%A4%91-%EB%B6%84%EB%A5%98-%EB%AA%A8%EB%8D%B8-%EB%A7%8C%EB%93%A4%EA%B8%B0-%ED%8C%8C%EC%9D%B4%EC%8D%ACColab)
