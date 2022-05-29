@@ -9,6 +9,12 @@
 pip install -r requirements2.txt
 pip install -r requirements.txt
 ```
+## model download
+
+https://drive.google.com/file/d/1Qts1ONrFPvnfJR1nNj3zsuk_zRruGPjE/view?usp=sharing
+
+clone 한 파일 안에 model폴더를 만든 후 다운로드 한 모델을 넣어주세요.
+
 ### 서버 입장
 ```python
 python3 src/chat.py
